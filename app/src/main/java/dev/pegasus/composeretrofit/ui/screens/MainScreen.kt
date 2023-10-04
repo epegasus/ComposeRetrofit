@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,14 +34,22 @@ fun MainScreen(viewModel: DataViewModel) {
             Text(text = "Loading...")
         } else {
             // Display the list of credit cards
-            CardItem(dataItemList!!)
+            RecyclerView(dataItemList!!)
         }
     }
 }
 
+@Composable
+fun RecyclerView(dataItemList: List<DataItem>) {
+    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
+        items(dataItemList) {
+            CardItem(dataItem = it)
+        }
+    }
+}
 
 @Composable
-fun CardItem(dataItemList: List<DataItem>) {
+fun CardItem(dataItem: DataItem) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,17 +61,17 @@ fun CardItem(dataItemList: List<DataItem>) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Sr. ${dataItemList[0].id}",
-                style = MaterialTheme.typography.titleLarge
+                text = "Sr. ${dataItem.id}",
+                style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = dataItemList[0].title,
+                text = dataItem.title,
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = dataItemList[0].body,
+                text = dataItem.body,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
