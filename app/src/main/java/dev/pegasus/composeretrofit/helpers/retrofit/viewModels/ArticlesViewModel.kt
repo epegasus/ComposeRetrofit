@@ -13,5 +13,5 @@ class ArticlesViewModel : ViewModel() {
 
     private val pagingSource = ArticlesPagingSource(RetrofitInstance.clientApi)
 
-    val pagingData = Pager(config = PagingConfig(pageSize = 10, enablePlaceholders = true), pagingSourceFactory = { pagingSource }).flow.cachedIn(viewModelScope)
+    val pagingData = Pager(config = PagingConfig(pageSize = 100), pagingSourceFactory = { pagingSource }).flow.cachedIn(viewModelScope)
 }

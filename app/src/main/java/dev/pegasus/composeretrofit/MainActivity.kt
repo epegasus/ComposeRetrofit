@@ -7,10 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import dev.pegasus.composeretrofit.helpers.retrofit.viewModels.ArticlesViewModel
 import dev.pegasus.composeretrofit.ui.screens.MainScreen
 import dev.pegasus.composeretrofit.ui.theme.ComposeRetrofitTheme
@@ -29,21 +26,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ComposeRetrofitTheme {
-        Greeting("Android")
     }
 }
