@@ -11,13 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.pegasus.composeretrofit.helpers.viewModels.DataViewModel
+import dev.pegasus.composeretrofit.helpers.retrofit.viewModels.ArticlesViewModel
 import dev.pegasus.composeretrofit.ui.screens.MainScreen
 import dev.pegasus.composeretrofit.ui.theme.ComposeRetrofitTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: DataViewModel by viewModels()
+    private val viewModel: ArticlesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

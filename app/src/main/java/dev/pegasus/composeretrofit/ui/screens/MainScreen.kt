@@ -1,77 +1,107 @@
 package dev.pegasus.composeretrofit.ui.screens
 
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.pegasus.composeretrofit.helpers.models.DataItem
-import dev.pegasus.composeretrofit.helpers.viewModels.DataViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import dev.pegasus.composeretrofit.helpers.retrofit.models.Product
+import dev.pegasus.composeretrofit.helpers.retrofit.viewModels.ArticlesViewModel
+import dev.pegasus.composeretrofit.helpers.utils.HelperUtils.TAG
 
 @Composable
-fun MainScreen(viewModel: DataViewModel) {
+fun MainScreen(viewModel: ArticlesViewModel) {
+    val pagingDataState = viewModel.pagingData.collectAsLazyPagingItems()
+    RecyclerView(pagingDataState = pagingDataState)
+}
 
-    val dataItemList by viewModel.dataItemLiveData.observeAsState(null)
+@Composable
+fun RecyclerView(pagingDataState: LazyPagingItems<Product>) {
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchData()
-    }
-
-    Column {
-        if (dataItemList.isNullOrEmpty()) {
-            // Show loading indicator or placeholder
-            Text(text = "Loading...")
-        } else {
-            // Display the list of credit cards
-            RecyclerView(dataItemList!!)
+    LazyColumn(content = {
+        items(pagingDataState.itemCount) {
+            val item = pagingDataState.itemSnapshotList.items[it]
+            CardItem(product = item)
         }
+    })
+
+    when (pagingDataState.loadState.refresh) {
+        LoadState.Loading -> {
+            Log.d(TAG, "RecyclerView: refresh: called")
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        }
+
+        is LoadState.Error -> {
+            Log.e(TAG, "RecyclerView: called")
+        }
+
+        else -> {}
+    }
+    when (pagingDataState.loadState.append) {
+        LoadState.Loading -> {
+            Log.d(TAG, "RecyclerView: append: called")
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom,
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        }
+
+        is LoadState.Error -> {
+            Log.e(TAG, "RecyclerView: called")
+        }
+
+        else -> {}
     }
 }
 
 @Composable
-fun RecyclerView(dataItemList: List<DataItem>) {
-    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
-        items(dataItemList) {
-            CardItem(dataItem = it)
-        }
-    }
-}
-
-@Composable
-fun CardItem(dataItem: DataItem) {
+fun CardItem(product: Product) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Sr. ${dataItem.id}",
+                text = "Sr. ${product.id}",
                 style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = dataItem.title,
+                text = product.title,
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = dataItem.body,
+                text = product.description,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
